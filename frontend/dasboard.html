@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Smart Budget Tracker</title>
+</head>
+<body>
+  <h2>Welcome to Smart Budget Tracker</h2>
+  <button onclick="logout()">Logout</button>
+
+  <h3>Add Transaction</h3>
+  <form id="transactionForm">
+    <select id="type">
+      <option value="income">Income</option>
+      <option value="expense">Expense</option>
+    </select><br><br>
+
+    <input type="text" id="category" placeholder="Category" required><br><br>
+    <input type="number" id="amount" placeholder="Amount" required><br><br>
+    <input type="date" id="date" required><br><br>
+    <input type="text" id="description" placeholder="Description"><br><br>
+
+    <button type="submit">Add Transaction</button>
+  </form>
+
+  <h3>Your Transactions</h3>
+  <table border="1" id="transactionsTable">
+    <thead>
+      <tr>
+        <th>Type</th>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Date</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="js/transactions.js"></script>
+</body>
+</html>

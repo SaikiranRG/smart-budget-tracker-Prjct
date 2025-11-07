@@ -1,0 +1,29 @@
+<h2>Add Transaction</h2>
+<form id="transactionForm">
+  <select name="type" required>
+    <option value="income">Income</option>
+    <option value="expense">Expense</option>
+  </select>
+  <input type="text" name="category" placeholder="Category" required>
+  <input type="number" name="amount" placeholder="Amount" required step="0.01">
+  <input type="date" name="date" required>
+  <textarea name="description" placeholder="Description"></textarea>
+  <button type="submit">Add Transaction</button>
+</form>
+
+<script>
+  document.getElementById('transactionForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+
+    const token = localStorage.getItem('jwt');
+    const res = await fetch('/api/transactions', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    alert(result.message);
+  });
+</script>

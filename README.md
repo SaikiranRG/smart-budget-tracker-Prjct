@@ -25,5 +25,11 @@ Authenticates user and returns JWT token.
 ### **GET /profile**
 Fetches user profile (requires JWT token).  
 
+### **POST /transactions**
+Adds user transactions (requires JWT token).
+
+### **GET /transactions**
+Fetches user transactions (requires JWT token).
+
 ## Application
 <URL> coming sooon.....
