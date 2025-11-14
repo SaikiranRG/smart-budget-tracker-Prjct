@@ -1,4 +1,4 @@
-const API_BASE = 'http://localhost:3000/api'; // adjust if using different port
+const API_BASE = 'http://localhost:4000/api/auth'; // adjust if using different port
 
 // Register
 const registerForm = document.getElementById('registerForm');
@@ -38,7 +38,7 @@ if (loginForm) {
     const data = await res.json();
     if (res.ok) {
       localStorage.setItem('token', data.token);
-      window.location.href = 'dashboard.html';
+      window.location.href = 'transactions.html';
     } else {
       alert(data.message);
     }

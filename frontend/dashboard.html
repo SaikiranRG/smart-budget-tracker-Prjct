@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Smart Budget Tracker</title>
+  <style>
+    body { font-family: Arial; margin: 30px; text-align: center; }
+    nav { margin-bottom: 20px; }
+    button { margin-right: 10px; padding: 8px 15px; }
+    .card { display: inline-block; padding: 20px; background: #f9f9f9; border-radius: 10px; width: 250px; margin: 10px; }
+    input { margin: 5px; padding: 5px; }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <button onclick="window.location.href='dashboard.html'">Summary</button>
+    <button onclick="window.location.href='transactions.html'">Transactions</button>
+    <button onclick="logout()">Logout</button>
+  </nav>
+
+  <h2>Financial Summary</h2>
+  <div>
+    <label>Start Date:</label>
+    <input type="date" id="start">
+    <label>End Date:</label>
+    <input type="date" id="end">
+    <button onclick="getSummary()">Get Summary</button>
+  </div>
+
+  <div id="summary">
+    <div class="card">
+      <h3>Total Income</h3>
+      <p id="income">$0.00</p>
+    </div>
+    <div class="card">
+      <h3>Total Expenses</h3>
+      <p id="expense">$0.00</p>
+    </div>
+    <div class="card">
+      <h3>Balance</h3>
+      <p id="balance">$0.00</p>
+    </div>
+  </div>
+
+  <script>
+    const API_BASE = 'http://localhost:4000/api';
+    const token = localStorage.getItem('token');
+    if (!token) window.location.href = 'index.html';
+
+    async function getSummary() {
+      const start = document.getElementById('start').value;
+      const end = document.getElementById('end').value;
+
+      let url = `${API_BASE}/summary`;
+      if (start && end) url += `?start=${start}&end=${end}`;
+
+      const res = await fetch(url, {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      const data = await res.json();
+
+      document.getElementById('income').textContent = `$${data.total_income || 0}`;
+      document.getElementById('expense').textContent = `$${data.total_expense || 0}`;
+      document.getElementById('balance').textContent = `$${data.balance || 0}`;
+    }
+
+    function logout() {
+      localStorage.removeItem('token');
+      window.location.href = 'index.html';
+    }
+  </script>
+
+</body>
+</html>
