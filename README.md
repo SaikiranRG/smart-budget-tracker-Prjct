@@ -31,5 +31,9 @@ Adds user transactions (requires JWT token).
 ### **GET /transactions**
 Fetches user transactions (requires JWT token).
 
+### **GET /summary**
+Fetches Summary details (requires JWT token).
+
+
 ## Application
 <URL> coming sooon.....
