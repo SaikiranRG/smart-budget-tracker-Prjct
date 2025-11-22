@@ -6,6 +6,8 @@ const authRoutes = require('./routes/auth');
 const profileRoutes = require('./routes/profile');
 const transactionRoutes = require('./routes/transactions');
 const summaryRoutes = require('./routes/summary');
+const chartRoutes = require('./routes/charts');
+
 
 
 const app = express();
@@ -16,6 +18,8 @@ app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api', summaryRoutes);
+app.use('/api/charts', chartRoutes);
+
 
 
 

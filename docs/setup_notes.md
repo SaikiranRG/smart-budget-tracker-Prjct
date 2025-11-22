@@ -68,10 +68,13 @@ Use Postman to test endpoints:
 - **GET** `/transactions/` (use JWT token)
 - **POST** `/transactions/` (use JWT token)
 - **GET** `/summary/` (use JWT token)
+- **GET** `/summmonthly-summaryary/` (use JWT token)
+- **GET** `/category-totals/` (use JWT token)
 
 Refer to screenshots in `/docs/test_week1.docx`.
 Refer to screenshots in `/docs/test_week2.docx`.
 Refer to screenshots in `/docs/test_week3.docx`.
+Refer to screenshots in `/docs/test_week4.docx`.
 
 ## Troubleshooting
 - **Database connection error:** Check credentials in `db.js` and ensure MySQL is running.  

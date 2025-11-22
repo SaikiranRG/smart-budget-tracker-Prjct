@@ -34,6 +34,11 @@ Fetches user transactions (requires JWT token).
 ### **GET /summary**
 Fetches Summary details (requires JWT token).
 
+### **GET /category-totals**
+Fetches total amount of each category details (requires JWT token).
+
+### **GET /monthly-summary**
+Fetches Monthly summary details (requires JWT token).
 
 ## Application
 <URL> coming sooon.....
