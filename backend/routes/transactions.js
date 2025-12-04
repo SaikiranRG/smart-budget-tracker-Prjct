@@ -31,7 +31,7 @@ router.post('/', auth, async (req, res) => {
 router.put('/:id', auth, (req, res) => {
   const { id } = req.params;
   const { type, category, amount, description, date } = req.body;
-  const userId = req.userId;
+  const userId = req.user.id;
 
   const query = `
     UPDATE transactions
@@ -101,5 +101,31 @@ router.get('/:id', auth, async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 });
+
+// Export transactions as CSV
+router.get('/export', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const [rows] = await db.query(
+      'SELECT type, category, amount, date, description FROM transactions WHERE user_id = ? ORDER BY date DESC',
+      [userId]
+    );
+
+    let csv = 'Type,Category,Amount,Date,Description\n';
+    rows.forEach(r => {
+      const desc = (r.description || '').replace(/"/g, '""'); // escape quotes
+      csv += `${r.type},${r.category},${r.amount},${r.date.toISOString().split('T')[0]},"${desc}"\n`;
+    });
+
+    res.setHeader('Content-Type', 'text/csv');
+    res.setHeader('Content-Disposition', 'attachment; filename="transactions.csv"');
+    res.send(csv);
+  } catch (err) {
+    console.error('CSV export error:', err);
+    res.status(500).json({ message: 'Error exporting CSV' });
+  }
+});
+
 
 module.exports = router;

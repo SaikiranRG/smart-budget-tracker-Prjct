@@ -4,184 +4,247 @@
   <meta charset="UTF-8">
   <title>Dashboard - Smart Budget Tracker</title>
 
-  <!-- Chart.js -->
+  <link rel="stylesheet" href="style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-  <style>
-    body { font-family: Arial; margin: 30px; text-align: center; }
-    nav { margin-bottom: 20px; }
-    button { margin-right: 10px; padding: 8px 15px; }
-    .card { display: inline-block; padding: 20px; background: #f9f9f9;
-            border-radius: 10px; width: 250px; margin: 10px; }
-    input { margin: 5px; padding: 5px; }
-    .chart-container {
-    width: 60%;                 
-    max-width: 600px;           
-    margin: 20px auto;          
-    padding: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  }
-
-  canvas {
-    width: 100% !important;     
-    height: 300px !important; 
-  }
-  </style>
 </head>
 
 <body>
 
-  <!-- Navigation -->
-  <nav>
-    <button onclick="window.location.href='dashboard.html'">Summary</button>
+<div class="layout">
+
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>Smart Budget</h2>
+
+    <button onclick="window.location.href='dashboard.html'">Dashboard</button>
     <button onclick="window.location.href='transactions.html'">Transactions</button>
-    <button onclick="logout()">Logout</button>
-  </nav>
-
-  <h2>Financial Summary</h2>
-
-  <!-- Date Filters -->
-  <div>
-    <label>Start Date:</label>
-    <input type="date" id="start">
-    <label>End Date:</label>
-    <input type="date" id="end">
-    <button onclick="getSummary()">Get Summary</button>
+    
+    <button style="background:#ef4444;" onclick="logout()">Logout</button>
   </div>
 
-  <!-- Summary Cards -->
-  <div id="summary">
-    <div class="card">
-      <h3>Total Income</h3>
-      <p id="income">$0.00</p>
+  <!-- Main Content -->
+  <div class="content">
+
+    <!-- CENTERED WRAPPER -->
+    <div class="center-wrapper">
+
+      <div class="page-title">Financial Summary</div>
+
+      <!-- Date Filters -->
+      <div class="filter-row center">
+        <label>Start Date:</label>
+        <input type="date" id="start">
+
+        <label>End Date:</label>
+        <input type="date" id="end">
+
+        <button class="save-btn" onclick="getSummary()">Get Summary</button>
+      </div>
+      <br>
+      <!-- SUMMARY CARDS -->
+      <div class="summary-cards">
+        <div class="card">
+          <h3 class="sumry-title">Total Income</h3>
+          <p id="income">$0.00</p>
+        </div>
+
+        <div class="card">
+          <h3 class="sumry-title">Total Expenses</h3>
+          <p id="expense">$0.00</p>
+        </div>
+
+        <div class="card">
+          <h3 class="sumry-title">Balance</h3>
+          <p id="balance">$0.00</p>
+        </div>
+      </div>
+
+      <!-- SAVINGS GOAL PLANNER -->
+      <div class="goal-card">
+        <h3>Savings Goal Planner</h3>
+
+        <form id="goalForm">
+          <div class="goal-row">
+            <div>
+              <label>Target Amount</label>
+              <input type="number" id="goalAmount" placeholder="e.g. 500" required>
+            </div>
+
+            <div>
+              <label>Target Date</label>
+              <input type="date" id="goalDate" required>
+            </div>
+          </div>
+
+          <button type="submit" class="save-btn">Save Goal</button>
+        </form>
+
+        <div id="goalDetails" class="goal-details hidden">
+          <p>Current Saved: $<span id="goalCurrent">0.00</span></p>
+          <p>Suggested Monthly Saving: $<span id="goalMonthly">0.00</span></p>
+          <p>Months Left: <span id="goalMonths">0</span></p>
+
+          <div class="progress-bar">
+            <div id="goalProgressBar" class="progress-bar-inner"></div>
+          </div>
+
+          <p>Progress: <span id="goalPercent">0%</span></p>
+        </div>
+      </div>
+
+    </div> <!-- END center-wrapper -->
+
+    <!-- CHARTS BELOW -->
+    <div class="chart-row">
+
+      <div class="chart-container">
+        <h3>Spending by Category</h3>
+        <canvas id="categoryChart"></canvas>
+      </div>
+
+      <div class="chart-container">
+        <h3>Income vs Expense (Monthly)</h3>
+        <canvas id="monthlyChart"></canvas>
+      </div>
+
     </div>
 
-    <div class="card">
-      <h3>Total Expenses</h3>
-      <p id="expense">$0.00</p>
-    </div>
-
-    <div class="card">
-      <h3>Balance</h3>
-      <p id="balance">$0.00</p>
-    </div>
   </div>
-
-  <hr>
-
-  <h2>Spending by Category</h2>
-<div class="chart-container">
-  <canvas id="categoryChart"></canvas>
-</div>
-
-<h2>Income vs Expense (Monthly)</h2>
-<div class="chart-container">
-  <canvas id="monthlyChart"></canvas>
 </div>
 
 
+<script>
+  const API = "http://localhost:4000/api";
+  const token = localStorage.getItem("token");
 
-  <script>
-    const API = "http://localhost:4000/api";
-    const token = localStorage.getItem("token");
+  if (!token) window.location.href = "index.html";
 
-    if (!token) window.location.href = "index.html";
+  /* === SUMMARY === */
+  async function getSummary() {
+    const start = document.getElementById('start').value;
+    const end = document.getElementById('end').value;
 
-    let categoryChartInstance = null;
-    let monthlyChartInstance = null;
+    let url = `${API}/summary`;
+    if (start && end) url += `?start=${start}&end=${end}`;
 
-    // ===== LOAD SUMMARY =====
-    async function getSummary() {
-      const start = document.getElementById('start').value;
-      const end = document.getElementById('end').value;
+    const res = await fetch(url, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
 
-      let url = `${API}/summary`;
-      if (start && end) url += `?start=${start}&end=${end}`;
+    const data = await res.json();
 
-      const res = await fetch(url, {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
+    document.getElementById('income').textContent = `$${Number(data.total_income).toFixed(2)}`;
+    document.getElementById('expense').textContent = `$${Number(data.total_expense).toFixed(2)}`;
+    document.getElementById('balance').textContent = `$${Number(data.balance).toFixed(2)}`;
+  }
 
-      const data = await res.json();
+  /* === PIE CHART === */
+  async function loadCategoryChart() {
+    const res = await fetch(`${API}/charts/category-totals`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
 
-      document.getElementById('income').textContent = `$${data.total_income || 0}`;
-      document.getElementById('expense').textContent = `$${data.total_expense || 0}`;
-      document.getElementById('balance').textContent = `$${data.balance || 0}`;
-    }
+    const data = await res.json();
 
-    // ===== PIE CHART =====
-    async function loadCategoryChart() {
-      const res = await fetch(`${API}/charts/category-totals`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
+    const labels = Object.keys(data);
+    const values = Object.values(data);
 
-       const data = await res.json();
+    const ctx = document.getElementById('categoryChart').getContext('2d');
 
-  // Convert object → arrays
-  const labels = Object.keys(data);   
-  console.log(labels)  
-  const values = Object.values(data);  
-
-  const ctx = document.getElementById('categoryChart').getContext('2d');
-
-  new Chart(ctx, {
-    type: 'pie',
-    data: {
-      labels: labels,
-      datasets: [{
-        data: values,
-        backgroundColor: [
-          '#FF6384', '#36A2EB', '#FFCE56',
-          '#4BC0C0', '#9966FF', '#FF9F40'
-        ]
+    new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels,
+        datasets: [{
+          data: values,
+          backgroundColor: ['#ff6384','#36a2eb','#ffce56','#4bc0c0','#9966ff','#ff9f40']
         }]
-    },
-    options: {
-      responsive: true,
-      plugins: {
-        tooltip: {
-          callbacks: {
-            label: (context) => `${context.label}: $${context.raw}`
-          }
-        }
       }
+    });
+  }
+
+  /* === BAR CHART === */
+  async function loadMonthlyChart() {
+    const res = await fetch(`${API}/charts/monthly-summary`, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    const ctx = document.getElementById("monthlyChart").getContext("2d");
+
+    new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: data.months,
+        datasets: [
+          { label: "Income", data: data.income, backgroundColor: "#10b981" },
+          { label: "Expense", data: data.expense, backgroundColor: "#ef4444" }
+        ]
+      }
+    });
+  }
+
+  /* === GOAL PLANNER === */
+  const GOAL_API = `${API}/goals`;
+
+  const goalForm = document.getElementById('goalForm');
+
+  async function loadGoal() {
+    const res = await fetch(GOAL_API, {
+      headers: { "Authorization": `Bearer ${token}` }
+    });
+
+    const data = await res.json();
+    const details = document.getElementById('goalDetails');
+
+    if (!data.hasGoal) {
+      details.classList.add('hidden');
+      return;
     }
+
+    details.classList.remove('hidden');
+
+    document.getElementById('goalCurrent').textContent = data.current_saved;
+    document.getElementById('goalMonthly').textContent = data.monthly_needed;
+    document.getElementById('goalMonths').textContent = data.months_left;
+    document.getElementById('goalPercent').textContent = `${data.percent}%`;
+
+    document.getElementById('goalProgressBar').style.width = `${data.percent}%`;
+  }
+
+  goalForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const target_amount = document.getElementById('goalAmount').value;
+    const target_date = document.getElementById('goalDate').value;
+
+    const res = await fetch(GOAL_API, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ target_amount, target_date })
+    });
+
+    const data = await res.json();
+    alert(data.message);
+    loadGoal();
   });
-}
 
-    // ===== BAR CHART =====
-    async function loadMonthlyChart() {
-      const res = await fetch(`${API}/charts/monthly-summary`, {
-        headers: { "Authorization": `Bearer ${token}` }
-      });
+  function logout() {
+    localStorage.removeItem('token');
+    window.location.href = "index.html";
+  }
 
-      const data = await res.json();
-      const ctx = document.getElementById("monthlyChart").getContext("2d");
+  /* === INITIAL LOAD === */
+  getSummary();
+  loadCategoryChart();
+  loadMonthlyChart();
+  loadGoal();
 
-      if (monthlyChartInstance) monthlyChartInstance.destroy();
-
-      monthlyChartInstance = new Chart(ctx, {
-        type: "bar",
-        data: {
-          labels: data.months,
-          datasets: [
-            { label: "Income", data: data.income, backgroundColor: "#4caf50" },
-            { label: "Expense", data: data.expense, backgroundColor: "#f44336" }
-          ]
-        }
-      });
-    }
-
-    function logout() {
-      localStorage.removeItem("token");
-      window.location.href = "index.html";
-    }
-
-    // Load charts and summary by default
-    getSummary();
-    loadCategoryChart();
-    loadMonthlyChart();
-  </script>
+</script>
 
 </body>
 </html>

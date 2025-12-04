@@ -7,6 +7,8 @@ const profileRoutes = require('./routes/profile');
 const transactionRoutes = require('./routes/transactions');
 const summaryRoutes = require('./routes/summary');
 const chartRoutes = require('./routes/charts');
+const goalRoutes = require('./routes/goals');
+const exportRoutes = require("./routes/export");
 
 
 
@@ -19,6 +21,8 @@ app.use('/api/profile', profileRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api', summaryRoutes);
 app.use('/api/charts', chartRoutes);
+app.use('/api/goals', goalRoutes);
+app.use("/api/export", exportRoutes);
 
 
 
