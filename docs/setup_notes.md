@@ -82,6 +82,7 @@ Use Postman to test endpoints:
 - **GET** `/goals/` (use JWT token)
 - **GET** `/export/csv/` (use JWT token)
 
+Screenshots
 - Refer to screenshots in `/docs/test_week1.docx`.
 - Refer to screenshots in `/docs/test_week2.docx`.
 - Refer to screenshots in `/docs/test_week3.docx`.
