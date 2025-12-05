@@ -9,6 +9,10 @@ Make sure you have the following installed:
 - [Git](https://git-scm.com/)
 - Postman (optional, for testing APIs)
 
+## Clone the Repository
+git clone <url>
+cd smart-budget-tracker-Prjct/backend
+
 ##  Install Dependencies
 Initialize Node and install required packages:
 ```bash
@@ -22,6 +26,7 @@ npm install
 - jsonwebtoken
 - dotenv
 - nodemon (for development)
+- json2csv (csv export functionality)
 
 ## Configure the Database
 
@@ -59,6 +64,9 @@ Server should start on:
 ```
 http://localhost:4000
 ```
+Open smart-budget-tracker-Prjct/frontend/index.html
+The frontend communicates automatically with the backend running on port 4000.
+
 Test the API
 Use Postman to test endpoints:
 - **POST** `/register`
@@ -70,11 +78,15 @@ Use Postman to test endpoints:
 - **GET** `/summary/` (use JWT token)
 - **GET** `/summmonthly-summaryary/` (use JWT token)
 - **GET** `/category-totals/` (use JWT token)
+- **POST** `/goals/` (use JWT token)
+- **GET** `/goals/` (use JWT token)
+- **GET** `/export/csv/` (use JWT token)
 
 Refer to screenshots in `/docs/test_week1.docx`.
 Refer to screenshots in `/docs/test_week2.docx`.
 Refer to screenshots in `/docs/test_week3.docx`.
 Refer to screenshots in `/docs/test_week4.docx`.
+Refer to screenshots in `/docs/test_week5-6.docx`.
 
 ## Troubleshooting
 - **Database connection error:** Check credentials in `db.js` and ensure MySQL is running.  

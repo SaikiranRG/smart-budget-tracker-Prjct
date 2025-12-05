@@ -40,5 +40,14 @@ Fetches total amount of each category details (requires JWT token).
 ### **GET /monthly-summary**
 Fetches Monthly summary details (requires JWT token).
 
+### **POST /goals**
+Save or update a goal (requires JWT token).
+
+### **GET /goals**
+Fetches goal summary details (requires JWT token).
+
+### **GET /export/csv**
+Fetches all user transactions as a CSV file. (requires JWT token).
+
 ## Application
 <URL> coming sooon.....
