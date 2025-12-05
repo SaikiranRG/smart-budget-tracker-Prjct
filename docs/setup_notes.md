@@ -82,11 +82,11 @@ Use Postman to test endpoints:
 - **GET** `/goals/` (use JWT token)
 - **GET** `/export/csv/` (use JWT token)
 
-Refer to screenshots in `/docs/test_week1.docx`.
-Refer to screenshots in `/docs/test_week2.docx`.
-Refer to screenshots in `/docs/test_week3.docx`.
-Refer to screenshots in `/docs/test_week4.docx`.
-Refer to screenshots in `/docs/test_week5-6.docx`.
+- Refer to screenshots in `/docs/test_week1.docx`.
+- Refer to screenshots in `/docs/test_week2.docx`.
+- Refer to screenshots in `/docs/test_week3.docx`.
+- Refer to screenshots in `/docs/test_week4.docx`.
+- Refer to screenshots in `/docs/test_week5-6.docx`.
 
 ## Troubleshooting
 - **Database connection error:** Check credentials in `db.js` and ensure MySQL is running.  
